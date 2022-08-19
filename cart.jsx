@@ -33,7 +33,7 @@ const useDataApi = (initialUrl, initialData) => {
         const result = await axios(url);
         console.log("FETCH FROM URl");
         if (!didCancel) {
-          dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+          dispatch({ type: "FETCH_SUCCESS", payload: result.data.data });
         }
       } catch (error) {
         if (!didCancel) {
@@ -90,9 +90,9 @@ const Products = (props) => {
   } = ReactBootstrap;
   //  Fetch Data
   const { Fragment, useState, useEffect, useReducer } = React;
-  const [query, setQuery] = useState("http://localhost:1337/products");
+  const [query, setQuery] = useState("http://localhost:1337/api/products");
   const [{ data, isLoading, isError }, doFetch] = useDataApi(
-    "http://localhost:1337/products",
+    "http://localhost:1337/api/products",
     {
       data: [],
     }
@@ -129,14 +129,14 @@ const Products = (props) => {
   let cartList = cart.map((item, index) => {
     return (
       <Accordion.Item key={1+index} eventKey={1 + index}>
-      <Accordion.Header>
-        {item.name}
-      </Accordion.Header>
-      <Accordion.Body onClick={() => deleteCartItem(index)}
-        eventKey={1 + index}>
-        $ {item.cost} from {item.country}
-      </Accordion.Body>
-    </Accordion.Item>
+        <Accordion.Header>
+          {item.name}
+        </Accordion.Header>
+        <Accordion.Body onClick={() => deleteCartItem(index)}
+          eventKey={1 + index}>
+          $ {item.cost} from {item.country}
+        </Accordion.Body>
+      </Accordion.Item>
     );
   });
 
@@ -164,6 +164,7 @@ const Products = (props) => {
     doFetch(url);
     let newItems = data.map((item)=>{
       let {name, country, cost, instock}=item;
+      return { name, country, cost, instock };
     });
     setItems([...items, ...newItems]);
   };
